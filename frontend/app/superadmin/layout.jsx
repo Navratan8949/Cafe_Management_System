@@ -19,27 +19,25 @@ export default function SuperAdminLayout({ children }) {
             <div className="flex justify-between h-16 items-center">
               <div className="flex items-center space-x-8">
                 <span className="flex items-center gap-2 text-base font-display font-semibold text-crema-50">
-                  <Coffee className="w-4 h-4 text-primary-400" /> Superadmin
+                  <img src="./images/logo.png" alt="coffee" className="w-10 h-10" /> Superadmin
                 </span>
                 <nav className="hidden md:flex space-x-1">
                   <Link
                     href="/superadmin"
-                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      pathname === "/superadmin"
+                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${pathname === "/superadmin"
                         ? "bg-primary-500/15 text-primary-400"
                         : "text-crema-100/60 hover:bg-crema-50/5 hover:text-crema-50"
-                    }`}
+                      }`}
                   >
                     <LayoutDashboard className="w-4 h-4 mr-2" />
                     Dashboard
                   </Link>
                   <Link
                     href="/superadmin/create"
-                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      pathname === "/superadmin/create"
+                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${pathname === "/superadmin/create"
                         ? "bg-primary-500/15 text-primary-400"
                         : "text-crema-100/60 hover:bg-crema-50/5 hover:text-crema-50"
-                    }`}
+                      }`}
                   >
                     <PlusCircle className="w-4 h-4 mr-2" />
                     Create manager

@@ -39,10 +39,18 @@ export default function ManagerLayout({ children }) {
       <div className="min-h-screen bg-espresso-950 text-crema-50 flex flex-col md:flex-row font-sans">
         {/* Sidebar */}
         <aside className="w-full md:w-64 bg-espresso-900 flex flex-col sticky top-0 md:h-screen z-10 border-b md:border-b-0 md:border-r border-crema-50/10">
-          <div className="h-16 flex items-center px-6 gap-0 border-b border-crema-50/10">
-            {/* <Coffee className="w-5 h-5 text-primary-400" /> */}
-            <img src="/images/logo.png" alt="Coffee" className="w-10 h-10" />
-            <span className="text-base font-display font-semibold text-crema-50">OmniBite</span>
+          <div className="h-16 flex items-center justify-between px-6 gap-0 border-b border-crema-50/10">
+            <div className="flex items-center gap-0">
+              <img src="/images/logo.png" alt="Coffee" className="w-10 h-10" />
+              <span className="text-base font-display font-semibold text-crema-50">OmniBite</span>
+            </div>
+            <button
+              onClick={logout}
+              className="md:hidden flex items-center justify-center p-2 rounded-md text-cherry-500 hover:bg-cherry-500/10 transition-colors"
+              title="Log out"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
           </div>
           <nav className="flex-1 py-4 flex flex-row overflow-x-auto md:flex-col gap-1 px-3">
             {navLinks.map((link) => {
