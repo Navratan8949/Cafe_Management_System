@@ -49,11 +49,11 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-crema-50 p-4">
       <div className="w-full max-w-sm">
         <Link href="/" className="flex items-center justify-center gap-2 mb-8">
-          <div className="bg-espresso-950 p-1.5 rounded-md">
-            <Coffee className="w-4 h-4 text-primary-400" />
+          <div className="rounded-md">
+            <img src={"./images/logo.png"} alt="omnibite" className="w-10 h-10" />
           </div>
           <span className="text-lg font-display font-semibold text-espresso-900">
-            Roast<span className="text-primary-600">&amp;Ticket</span>
+            Omni<span className="text-primary-600">&amp;Bite</span>
           </span>
         </Link>
 
@@ -92,7 +92,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-sm text-espresso-900/50 mt-6">
-          New to Roast&amp;Ticket? <Link href="/register" className="text-primary-600 font-semibold hover:underline">Create your cafe</Link>
+          New to Omni&amp;Bite? <Link href="/register" className="text-primary-600 font-semibold hover:underline">Create your cafe</Link>
         </p>
       </div>
     </div>

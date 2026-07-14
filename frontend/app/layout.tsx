@@ -24,7 +24,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Roast & Ticket | Cafe Management System",
+  title: "OmniBite | Cafe Management System",
   description: "Manage your cafe easily",
 };
 

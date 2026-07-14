@@ -16,7 +16,7 @@ export default function LandingPage() {
               <img src="/images/logo.png" alt="Coffee" className="w-10 h-10" />
             </div>
             <span className="text-lg font-display font-semibold tracking-tight text-crema-50">
-              Roast<span className="text-primary-400">&amp;Ticket</span>
+              Omni<span className="text-primary-400">&amp;Bite</span>
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -34,7 +34,6 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero Section — dark roast */}
       <section className="relative bg-espresso-950 pt-32 pb-28 lg:pt-44 lg:pb-36 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[900px] h-[500px] opacity-25 bg-primary-500 rounded-[100%] blur-[130px]" />
@@ -120,10 +119,10 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="bg-espresso-950 py-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Coffee className="w-5 h-5 text-primary-400" />
+          <div className="flex items-center gap-0">
+            <img src={"./images/logo.png"} alt="omnibite" className="w-10 h-10" />
             <span className="text-base font-display font-semibold text-crema-50">
-              Roast<span className="text-primary-400">&amp;Ticket</span>
+              Omni<span className="text-primary-400">&amp;Bite</span>
             </span>
           </div>
           <p className="text-crema-200/40 text-sm font-mono">
