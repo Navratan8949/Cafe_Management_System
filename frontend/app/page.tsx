@@ -16,7 +16,7 @@ export default function LandingPage() {
               <img src="/images/logo.png" alt="Coffee" className="w-10 h-10" />
             </div>
             <span className="text-lg font-display font-semibold tracking-tight text-crema-50">
-              Omni<span className="text-primary-400">&amp;Bite</span>
+              Omni<span className="text-primary-400">Bite</span>
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -120,9 +120,9 @@ export default function LandingPage() {
       <footer className="bg-espresso-950 py-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-0">
-            <img src={"./images/logo.png"} alt="omnibite" className="w-10 h-10" />
+            <img src="/images/logo.png" alt="Coffee" className="w-10 h-10" />
             <span className="text-base font-display font-semibold text-crema-50">
-              Omni<span className="text-primary-400">&amp;Bite</span>
+              Omni<span className="text-primary-400">Bite</span>
             </span>
           </div>
           <p className="text-crema-200/40 text-sm font-mono">

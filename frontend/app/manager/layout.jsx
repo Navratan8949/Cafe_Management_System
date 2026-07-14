@@ -42,7 +42,7 @@ export default function ManagerLayout({ children }) {
           <div className="h-16 flex items-center px-6 gap-0 border-b border-crema-50/10">
             {/* <Coffee className="w-5 h-5 text-primary-400" /> */}
             <img src="/images/logo.png" alt="Coffee" className="w-10 h-10" />
-            <span className="text-base font-display font-semibold text-crema-50">Omni&amp;Bite</span>
+            <span className="text-base font-display font-semibold text-crema-50">OmniBite</span>
           </div>
           <nav className="flex-1 py-4 flex flex-row overflow-x-auto md:flex-col gap-1 px-3">
             {navLinks.map((link) => {

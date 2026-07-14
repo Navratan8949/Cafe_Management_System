@@ -52,12 +52,12 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-crema-50 p-4 py-12">
       <div className="w-full max-w-xl">
-        <Link href="/" className="flex items-center justify-center gap-2 mb-8">
-          <div className=" rounded-md">
-            <img src={"./images/logo.png"} alt="omnibite" className="w-10 h-10" />
+        <Link href="/" className="flex items-center justify-center gap-0 mb-8">
+          <div className="rounded-md">
+            <img src="/images/logo.png" alt="Coffee" className="w-10 h-10" />
           </div>
           <span className="text-lg font-display font-semibold text-espresso-900">
-            Omni<span className="text-primary-600">&amp;Bite</span>
+            Omni<span className="text-primary-600">Bite</span>
           </span>
         </Link>
 

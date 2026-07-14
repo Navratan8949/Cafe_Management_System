@@ -48,12 +48,12 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-crema-50 p-4">
       <div className="w-full max-w-sm">
-        <Link href="/" className="flex items-center justify-center gap-2 mb-8">
+        <Link href="/" className="flex items-center justify-center gap-0 mb-8">
           <div className="rounded-md">
-            <img src={"./images/logo.png"} alt="omnibite" className="w-10 h-10" />
+            <img src="/images/logo.png" alt="Coffee" className="w-10 h-10" />
           </div>
           <span className="text-lg font-display font-semibold text-espresso-900">
-            Omni<span className="text-primary-600">&amp;Bite</span>
+            Omni<span className="text-primary-600">Bite</span>
           </span>
         </Link>
 
@@ -92,7 +92,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-sm text-espresso-900/50 mt-6">
-          New to Omni&amp;Bite? <Link href="/register" className="text-primary-600 font-semibold hover:underline">Create your cafe</Link>
+          New to OmniBite? <Link href="/register" className="text-primary-600 font-semibold hover:underline">Create your cafe</Link>
         </p>
       </div>
     </div>
