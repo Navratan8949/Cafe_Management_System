@@ -18,7 +18,9 @@ export default function RegisterPage() {
     hotelPhone: "",
     managerName: "",
     managerEmail: "",
-    managerPassword: ""
+    managerPassword: "",
+    latitude: "",
+    longitude: ""
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +35,26 @@ export default function RegisterPage() {
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleGetLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setFormData((prev) => ({
+            ...prev,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          }));
+        },
+        (error) => {
+          console.error("Error getting location", error);
+          alert("Unable to retrieve your location. Please ensure location access is allowed.");
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser");
+    }
   };
 
   const handleRegister = async (e) => {
@@ -79,6 +101,17 @@ export default function RegisterPage() {
                 <Input label="Cafe phone" id="hotelPhone" value={formData.hotelPhone} onChange={handleChange} required />
                 <div className="md:col-span-2">
                   <Input label="Cafe address" id="hotelAddress" value={formData.hotelAddress} onChange={handleChange} required />
+                </div>
+                <div className="md:col-span-2 flex flex-col sm:flex-row items-end gap-4">
+                  <div className="flex-1 w-full">
+                    <Input label="Latitude" id="latitude" type="number" step="any" value={formData.latitude} onChange={handleChange} />
+                  </div>
+                  <div className="flex-1 w-full">
+                    <Input label="Longitude" id="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} />
+                  </div>
+                  <Button type="button" variant="secondary" onClick={handleGetLocation} className="mb-[2px] w-full sm:w-auto h-[42px]">
+                    Get Current Location
+                  </Button>
                 </div>
               </div>
             </div>

@@ -15,6 +15,8 @@ export default function SettingsPage() {
     hotelName: "",
     address: "",
     phone: "",
+    latitude: "",
+    longitude: ""
   });
   const [file, setFile] = useState(null);
 
@@ -31,12 +33,34 @@ export default function SettingsPage() {
           hotelName: data.data.hotel.name,
           address: data.data.hotel.address,
           phone: data.data.hotel.phone,
+          latitude: data.data.hotel.location?.latitude || "",
+          longitude: data.data.hotel.location?.longitude || "",
         });
       }
     } catch (error) {
       console.error("Failed to fetch profile", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGetLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setFormData((prev) => ({
+            ...prev,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          }));
+        },
+        (error) => {
+          console.error("Error getting location", error);
+          alert("Unable to retrieve your location. Please ensure location access is allowed.");
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser");
     }
   };
 
@@ -50,6 +74,8 @@ export default function SettingsPage() {
       fd.append("hotelName", formData.hotelName);
       fd.append("address", formData.address);
       fd.append("phone", formData.phone);
+      if (formData.latitude) fd.append("latitude", formData.latitude);
+      if (formData.longitude) fd.append("longitude", formData.longitude);
       if (file) fd.append("logo", file);
 
       await updateProfile(fd);
@@ -123,6 +149,31 @@ export default function SettingsPage() {
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   required
                 />
+              </div>
+              <div className="sm:col-span-2 flex flex-col sm:flex-row items-end gap-4">
+                <div className="flex-1 w-full">
+                  <Input 
+                    label="Latitude" 
+                    id="latitude" 
+                    type="number" 
+                    step="any" 
+                    value={formData.latitude} 
+                    onChange={(e) => setFormData({ ...formData, latitude: e.target.value })} 
+                  />
+                </div>
+                <div className="flex-1 w-full">
+                  <Input 
+                    label="Longitude" 
+                    id="longitude" 
+                    type="number" 
+                    step="any" 
+                    value={formData.longitude} 
+                    onChange={(e) => setFormData({ ...formData, longitude: e.target.value })} 
+                  />
+                </div>
+                <Button type="button" variant="secondary" onClick={handleGetLocation} className="mb-[2px] w-full sm:w-auto h-[42px]">
+                  Get Current Location
+                </Button>
               </div>
             </div>
             <div className="flex justify-end pt-4 border-t border-espresso-900/10">
