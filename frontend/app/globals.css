@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+/*
+  Design system: "Espresso & Ticket"
+  - Crema: warm paper tones for customer + auth surfaces
+  - Espresso: dark roast tones for the manager / superadmin console
+  - Copper: shared brand accent (not the generic AI terracotta)
+  - Mono numerals throughout for prices, order #s, table #s — the "ticket" signature
+*/
+
+:root {
+  --background: #FBF6EC;
+  --foreground: #241C15;
+
+  --crema-50: #FDFAF3;
+  --crema-100: #F6EEDD;
+  --crema-200: #EEE1C7;
+
+  --espresso-950: #17110C;
+  --espresso-900: #211810;
+  --espresso-800: #2C2116;
+  --espresso-700: #3A2C1E;
+  --espresso-600: #4C3B28;
+
+  --copper-300: #E3B486;
+  --copper-400: #D2965D;
+  --copper-500: #C1793D;
+  --copper-600: #A6612C;
+  --copper-700: #854B21;
+
+  --leaf-500: #6E8F5F;
+  --leaf-600: #57724A;
+  --cherry-500: #BB4A34;
+  --cherry-600: #A63A2C;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-ticket);
+
+  --color-crema-50: var(--crema-50);
+  --color-crema-100: var(--crema-100);
+  --color-crema-200: var(--crema-200);
+
+  --color-espresso-950: var(--espresso-950);
+  --color-espresso-900: var(--espresso-900);
+  --color-espresso-800: var(--espresso-800);
+  --color-espresso-700: var(--espresso-700);
+  --color-espresso-600: var(--espresso-600);
+
+  /* primary-* kept as the alias the rest of the app already uses */
+  --color-primary-50: var(--copper-300);
+  --color-primary-100: #EEDABE;
+  --color-primary-300: var(--copper-300);
+  --color-primary-400: var(--copper-400);
+  --color-primary-500: var(--copper-500);
+  --color-primary-600: var(--copper-600);
+  --color-primary-700: var(--copper-700);
+
+  --color-leaf-500: var(--leaf-500);
+  --color-leaf-600: var(--leaf-600);
+  --color-cherry-500: var(--cherry-500);
+  --color-cherry-600: var(--cherry-600);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Ticket / receipt signature: a torn-paper perforation using a scalloped mask */
+.ticket-edge {
+  position: relative;
+}
+.ticket-edge::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1px;
+  height: 10px;
+  background-image: radial-gradient(circle at 8px 0, transparent 8px, var(--crema-50) 8.5px);
+  background-size: 16px 10px;
+  background-repeat: repeat-x;
+}
+.ticket-edge-dark::before {
+  background-image: radial-gradient(circle at 8px 0, transparent 8px, var(--espresso-900) 8.5px);
+}
+
+/* Dashed perforation divider used inside ticket-style cards */
+.ticket-perforation {
+  border-top: 1.5px dashed color-mix(in oklab, currentColor 25%, transparent);
+}
