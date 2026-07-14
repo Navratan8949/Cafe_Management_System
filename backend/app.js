@@ -14,10 +14,7 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Allow any origin dynamically (useful for local development with IP and localhost)
-      callback(null, origin || true);
-    },
+    origin: allowedOrigins,
     credentials: true,
   })
 );
