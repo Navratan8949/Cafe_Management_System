@@ -66,18 +66,45 @@ export default function CustomerMenuPage({ params }) {
       quantity,
     }));
 
-    try {
-      setOrderStatus("Placing order...");
-      const data = await placeOrder(hotelId, { tableId, items });
-      if (data.success) {
-        setCart({});
-        setIsCartOpen(false);
-        setOrderId(data.data._id);
-        setOrderStatus(`Order placed. Status: ${data.data.status}`);
+    setOrderStatus("Getting location...");
+
+    const submitOrder = async (lat, lng) => {
+      try {
+        setOrderStatus("Placing order...");
+        const payload = { tableId, items };
+        if (lat && lng) {
+          payload.customerLat = lat;
+          payload.customerLng = lng;
+        }
+        const data = await placeOrder(hotelId, payload);
+        if (data.success) {
+          setCart({});
+          setIsCartOpen(false);
+          setOrderId(data.data._id);
+          setOrderStatus(`Order placed. Status: ${data.data.status}`);
+        }
+      } catch (error) {
+        alert(error.response?.data?.message || "Failed to place order.");
+        setOrderStatus("");
       }
-    } catch (error) {
-      alert(error.response?.data?.message || "Failed to place order.");
-      setOrderStatus("");
+    };
+
+    if (navigator.geolocation) {
+      alert("Please allow location access so we can verify you are at the cafe.");
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          submitOrder(position.coords.latitude, position.coords.longitude);
+        },
+        (error) => {
+          console.warn("Could not get location", error);
+          alert("Location access failed! Please turn on your phone's GPS and allow location permission in your browser to place an order.");
+          setOrderStatus("");
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser. Cannot verify location.");
+      submitOrder(null, null);
     }
   };
 
