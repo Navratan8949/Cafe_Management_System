@@ -8,7 +8,6 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://10.90.116.27:3000",
   process.env.CORS_ORIGIN
 ];
 

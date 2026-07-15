@@ -387,15 +387,19 @@ export default function CustomerMenuPage({ params }) {
                 <input
                   type="tel"
                   value={tempPhone}
-                  onChange={(e) => setTempPhone(e.target.value)}
+                  onChange={(e) => setTempPhone(e.target.value.replace(/[^0-9]/g, ''))}
+                  maxLength={10}
                   className="w-full bg-crema-100/50 border border-espresso-900/10 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-primary-500 focus:outline-none transition-all text-espresso-900 font-medium"
                   placeholder="e.g. 9876543210"
                 />
+                {tempPhone.length > 0 && tempPhone.length < 10 && (
+                  <p className="text-cherry-500 text-[10px] mt-1.5 font-semibold">Please enter a valid 10-digit phone number.</p>
+                )}
               </div>
             </div>
             <Button
               className="w-full py-4 text-base rounded-xl shadow-lg shadow-primary-500/20"
-              disabled={!tempName.trim() || !tempPhone.trim()}
+              disabled={!tempName.trim() || tempPhone.length !== 10}
               onClick={() => {
                 localStorage.setItem("cafe_customer_name", tempName.trim());
                 localStorage.setItem("cafe_customer_phone", tempPhone.trim());
