@@ -160,7 +160,7 @@ export default function MenuPage() {
             <Card key={item._id} className="flex flex-col group">
               <div className="relative h-40 bg-espresso-900/5 overflow-hidden">
                 {item.image ? (
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  <img src={item.image.replace("http://", "https://")} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-espresso-900/20">
                     <UtensilsCrossed className="w-10 h-10" />

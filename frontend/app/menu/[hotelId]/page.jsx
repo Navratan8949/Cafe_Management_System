@@ -21,6 +21,8 @@ export default function CustomerMenuPage({ params }) {
   const [orderStatus, setOrderStatus] = useState("");
   const [orderId, setOrderId] = useState(null);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [isCallingWaiter, setIsCallingWaiter] = useState(false);
+  const [isRequestingBill, setIsRequestingBill] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [isIdentityModalOpen, setIsIdentityModalOpen] = useState(false);
@@ -152,28 +154,34 @@ export default function CustomerMenuPage({ params }) {
 
   const handleCallWaiter = async () => {
     if (!tableId) return;
+    setIsCallingWaiter(true);
     try {
       await callWaiter(hotelId, tableId);
       alert("Waiter has been called to your table.");
     } catch (error) {
       alert("Failed to call waiter.");
+    } finally {
+      setIsCallingWaiter(false);
     }
   };
 
   const handleRequestBill = async () => {
     if (!tableId) return;
+    setIsRequestingBill(true);
     try {
       await requestBill(hotelId, tableId);
       alert("Bill requested. Please wait.");
     } catch (error) {
       alert("Failed to request bill.");
+    } finally {
+      setIsRequestingBill(false);
     }
   };
 
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-crema-50 gap-3">
-        <img src="./images/logo.png" alt="logo" className="w-10 h-10 animate-pulse" />
+        <img src="/images/logo.png" alt="Coffee" className="w-15 h-15 animate-pulse" />
         <div className="text-espresso-900/50 font-mono text-sm tracking-wide">Brewing the menu&hellip;</div>
       </div>
     );
@@ -191,23 +199,37 @@ export default function CustomerMenuPage({ params }) {
     <div className="min-h-screen bg-crema-50 text-espresso-900 pb-28">
       {/* Header */}
       <header className="bg-espresso-950 text-crema-50 sticky top-0 z-10">
-        <div className="px-4 py-4 max-w-md mx-auto flex justify-between items-center">
-          <div>
-            <h1 className="text-lg font-display font-semibold leading-none">Menu</h1>
-            {tableId && (
-              <p className="text-xs text-crema-100/50 font-mono mt-1.5 tracking-wide">
-                TABLE {tableNumber || tableId.slice(-4)}
-              </p>
-            )}
+        <div className="px-4 py-4 max-w-md mx-auto flex flex-col">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-lg font-display font-semibold leading-none">Menu</h1>
+              {tableId && (
+                <p className="text-xs text-crema-100/50 font-mono mt-1.5 tracking-wide">
+                  TABLE {tableNumber || tableId.slice(-4)}
+                </p>
+              )}
+            </div>
           </div>
-          <div className="flex gap-2">
-            <button onClick={handleCallWaiter} className="p-2.5 bg-crema-50/10 rounded-full text-crema-50 active:bg-crema-50/20">
-              <Bell className="w-4 h-4" />
-            </button>
-            <button onClick={handleRequestBill} className="p-2.5 bg-crema-50/10 rounded-full text-crema-50 active:bg-crema-50/20">
-              <ReceiptText className="w-4 h-4" />
-            </button>
-          </div>
+          {tableId && (
+            <div className="flex gap-2 w-full mt-3">
+              <Button variant="outline" className="flex-1 gap-2 text-xs py-2 bg-crema-50/10 border-crema-50/20 text-crema-50 hover:bg-crema-50/20 hover:text-crema-50" onClick={handleCallWaiter} disabled={isCallingWaiter}>
+                {isCallingWaiter ? (
+                  <div className="w-3.5 h-3.5 border-2 border-crema-50/30 border-t-crema-50 rounded-full animate-spin" />
+                ) : (
+                  <Bell className="w-3.5 h-3.5" />
+                )}
+                Call Waiter
+              </Button>
+              <Button variant="outline" className="flex-1 gap-2 text-xs py-2 bg-crema-50/10 border-crema-50/20 text-crema-50 hover:bg-crema-50/20 hover:text-crema-50" onClick={handleRequestBill} disabled={isRequestingBill}>
+                {isRequestingBill ? (
+                  <div className="w-3.5 h-3.5 border-2 border-crema-50/30 border-t-crema-50 rounded-full animate-spin" />
+                ) : (
+                  <ReceiptText className="w-3.5 h-3.5" />
+                )}
+                Request Bill
+              </Button>
+            </div>
+          )}
         </div>
       </header>
 
@@ -266,7 +288,7 @@ export default function CustomerMenuPage({ params }) {
                   <div key={item._id} className="flex bg-crema-50 rounded-xl border border-espresso-900/10 overflow-hidden">
                     {item.image && (
                       <div className="w-24 shrink-0">
-                        <img src={item.image} alt={item.name} className="w-full h-[150px] object-cover" />
+                        <img src={item.image.replace("http://", "https://")} alt={item.name} className="w-full h-[100px] object-cover" />
                       </div>
                     )}
                     <div className="flex-1 p-3 flex flex-col justify-between min-w-0">

@@ -8,6 +8,7 @@ import { CheckCircle2, XCircle, Clock } from "lucide-react";
 export default function ActiveOrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [updatingOrder, setUpdatingOrder] = useState({ id: null, action: null });
 
   const fetchOrders = async () => {
     try {
@@ -38,6 +39,7 @@ export default function ActiveOrdersPage() {
 
   const handleUpdateStatus = async (orderId, newStatus) => {
     try {
+      setUpdatingOrder({ id: orderId, action: newStatus });
       await updateOrderStatus(orderId, newStatus);
       if (newStatus === "ACCEPTED") {
         setOrders((prev) => prev.map((o) => o._id === orderId ? { ...o, status: "ACCEPTED" } : o));
@@ -47,6 +49,8 @@ export default function ActiveOrdersPage() {
       }
     } catch (error) {
       console.error("Failed to update order status", error);
+    } finally {
+      setUpdatingOrder({ id: null, action: null });
     }
   };
 
@@ -111,23 +115,41 @@ export default function ActiveOrdersPage() {
                       <Button
                         variant="danger"
                         className="w-full gap-2"
+                        disabled={updatingOrder.id === order._id}
                         onClick={() => handleUpdateStatus(order._id, "CANCELLED")}
                       >
-                        <XCircle className="w-4 h-4" /> Cancel
+                        {updatingOrder.id === order._id && updatingOrder.action === "CANCELLED" ? (
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                          <XCircle className="w-4 h-4" />
+                        )}
+                        Cancel
                       </Button>
                       <Button
                         className="w-full gap-2 bg-leaf-600 hover:bg-leaf-500 text-crema-50"
+                        disabled={updatingOrder.id === order._id}
                         onClick={() => handleUpdateStatus(order._id, "ACCEPTED")}
                       >
-                        <CheckCircle2 className="w-4 h-4" /> Accept
+                        {updatingOrder.id === order._id && updatingOrder.action === "ACCEPTED" ? (
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                          <CheckCircle2 className="w-4 h-4" />
+                        )}
+                        Accept
                       </Button>
                     </div>
                   ) : (
                     <Button
                       className="w-full gap-2 bg-primary-600 hover:bg-primary-500 text-crema-50"
+                      disabled={updatingOrder.id === order._id}
                       onClick={() => handleUpdateStatus(order._id, "COMPLETED")}
                     >
-                      <CheckCircle2 className="w-4 h-4" /> Complete Order
+                      {updatingOrder.id === order._id && updatingOrder.action === "COMPLETED" ? (
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <CheckCircle2 className="w-4 h-4" />
+                      )}
+                      Complete Order
                     </Button>
                   )}
                 </div>

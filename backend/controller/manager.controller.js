@@ -23,8 +23,8 @@ const createMenuItem = asyncHandler(async (req, res) => {
   let imageUrl = "";
   if (req.file) {
     const cloudinaryResponse = await uploadOnCloudinary(req.file.path);
-    if (cloudinaryResponse && cloudinaryResponse.url) {
-      imageUrl = cloudinaryResponse.url;
+    if (cloudinaryResponse && cloudinaryResponse.secure_url) {
+      imageUrl = cloudinaryResponse.secure_url;
     }
   }
 
@@ -183,9 +183,9 @@ const getDashboardAnalytics = asyncHandler(async (req, res) => {
   // Total Orders & Revenue
   const orders = await Order.find(query);
   const totalOrders = orders.length;
-  // Calculate revenue only for ACCEPTED orders
-  const acceptedOrders = orders.filter((o) => o.status === "ACCEPTED");
-  const totalRevenue = acceptedOrders.reduce((acc, order) => acc + order.totalAmount, 0);
+  // Calculate revenue for both ACCEPTED and COMPLETED orders
+  const revenueOrders = orders.filter((o) => ["ACCEPTED", "COMPLETED"].includes(o.status));
+  const totalRevenue = revenueOrders.reduce((acc, order) => acc + order.totalAmount, 0);
 
   // Occupied Tables (Tables with active orders)
   const activeOrders = orders.filter((o) => ["PENDING", "ACCEPTED"].includes(o.status));
@@ -261,8 +261,8 @@ const updateProfile = asyncHandler(async (req, res) => {
   // Handle Logo Upload
   if (req.file) {
     const cloudinaryResponse = await uploadOnCloudinary(req.file.path);
-    if (cloudinaryResponse && cloudinaryResponse.url) {
-      hotelUpdates.logo = cloudinaryResponse.url;
+    if (cloudinaryResponse && cloudinaryResponse.secure_url) {
+      hotelUpdates.logo = cloudinaryResponse.secure_url;
     }
   }
 
