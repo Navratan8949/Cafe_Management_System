@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { getMenu, placeOrder, getOrderStatus, callWaiter, requestBill } = require("../controller/customer.controller");
+const { getMenu, placeOrder, getOrderStatus, callWaiter, requestBill, getTableOrders } = require("../controller/customer.controller");
 
 const router = Router();
 
@@ -11,6 +11,7 @@ router.route("/:hotelId/order/:orderId").get(getOrderStatus);
 
 router.route("/:hotelId/table/:tableId/call-waiter").post(callWaiter);
 router.route("/:hotelId/table/:tableId/request-bill").post(requestBill);
+router.route("/:hotelId/table/:tableId/orders").get(getTableOrders);
 
 
 module.exports = router;

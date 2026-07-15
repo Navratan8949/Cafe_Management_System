@@ -342,7 +342,7 @@ const getActiveOrders = asyncHandler(async (req, res) => {
 
   const orders = await Order.find({
     hotelId,
-    status: "PENDING", // Only fetch pending orders for the manager to review
+    status: { $in: ["PENDING", "ACCEPTED"] },
   })
     .populate("tableId", "tableNumber")
     .populate("items.menuItem", "name isVeg")
@@ -358,7 +358,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
   const { status } = req.body;
   const hotelId = req.user.hotelId;
 
-  const validStatuses = ["PENDING", "ACCEPTED", "CANCELLED"];
+  const validStatuses = ["PENDING", "ACCEPTED", "COMPLETED", "CANCELLED"];
   if (!validStatuses.includes(status)) {
     throw new ApiError(400, "Invalid status provided");
   }

@@ -39,8 +39,16 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["PENDING", "ACCEPTED", "CANCELLED"],
+    enum: ["PENDING", "ACCEPTED", "COMPLETED", "CANCELLED"],
     default: "PENDING"
+  },
+  customerName: {
+    type: String,
+    required: true
+  },
+  customerPhone: {
+    type: String,
+    required: true
   }
 }, { timestamps: true });
 

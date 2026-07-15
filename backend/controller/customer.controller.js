@@ -35,10 +35,14 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
 
 const placeOrder = asyncHandler(async (req, res) => {
   const { hotelId } = req.params;
-  const { tableId, items, customerNotes, customerLat, customerLng } = req.body;
+  const { tableId, items, customerNotes, customerLat, customerLng, customerName, customerPhone } = req.body;
 
   if (!tableId || !items || items.length === 0) {
     throw new ApiError(400, "Table ID and items are required");
+  }
+
+  if (!customerName || !customerPhone) {
+    throw new ApiError(400, "Customer name and phone are required for accountability");
   }
 
   // 1. Geofencing Validation
@@ -103,6 +107,8 @@ const placeOrder = asyncHandler(async (req, res) => {
     items: orderItems,
     totalAmount,
     customerNotes,
+    customerName,
+    customerPhone
   });
 
   // Emit real-time notification to the Manager
@@ -194,10 +200,27 @@ const requestBill = asyncHandler(async (req, res) => {
 });
 
 
+const getTableOrders = asyncHandler(async (req, res) => {
+  const { hotelId, tableId } = req.params;
+
+  const orders = await Order.find({
+    hotelId,
+    tableId,
+    status: { $in: ["PENDING", "ACCEPTED", "COMPLETED"] }
+  })
+    .populate("items.menuItem", "name price isVeg")
+    .sort({ createdAt: -1 });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, orders, "Table orders fetched successfully"));
+});
+
 module.exports = {
   getMenu,
   placeOrder,
   getOrderStatus,
   callWaiter,
-  requestBill
+  requestBill,
+  getTableOrders
 };

@@ -125,7 +125,13 @@ export default function OrderHistoryPage() {
                         <div className="text-xs text-espresso-900/40">{dayjs(order.createdAt).format("MMM D, YYYY h:mm A")}</div>
                       </td>
                       <td className="px-6 py-4 font-medium text-espresso-900">
-                        {order.tableId?.tableNumber || "N/A"}
+                        <div>{order.tableId?.tableNumber || "N/A"}</div>
+                        {(order.customerName || order.customerPhone) && (
+                          <div className="text-[10px] text-espresso-900/50 font-normal mt-1 flex flex-col leading-tight">
+                            <span>{order.customerName}</span>
+                            {order.customerPhone && <span>{order.customerPhone}</span>}
+                          </div>
+                        )}
                       </td>
                       <td className="px-6 py-4 font-sans">
                         <ul className="text-xs text-espresso-900/60 space-y-1">

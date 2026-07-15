@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import { useSearchParams } from "next/navigation";
-import { getMenu, placeOrder, callWaiter, requestBill } from "@/src/service/customer.service";
+import { getMenu, placeOrder, callWaiter, requestBill, getTableOrders } from "@/src/service/customer.service";
 import { Button } from "@/src/components/ui/Button";
 import { Plus, Minus, ShoppingCart, Bell, ReceiptText, X, Coffee } from "lucide-react";
 
@@ -20,10 +20,42 @@ export default function CustomerMenuPage({ params }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [orderStatus, setOrderStatus] = useState("");
   const [orderId, setOrderId] = useState(null);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [isIdentityModalOpen, setIsIdentityModalOpen] = useState(false);
+  const [tempName, setTempName] = useState("");
+  const [tempPhone, setTempPhone] = useState("");
+  const [tableOrders, setTableOrders] = useState([]);
 
   useEffect(() => {
     fetchMenu();
-  }, [hotelId]);
+    if (tableId) {
+      fetchTableOrders();
+    }
+    
+    // Check local storage for identity
+    const savedName = localStorage.getItem("cafe_customer_name");
+    const savedPhone = localStorage.getItem("cafe_customer_phone");
+    if (savedName && savedPhone) {
+      setCustomerName(savedName);
+      setCustomerPhone(savedPhone);
+    } else {
+      setIsIdentityModalOpen(true);
+    }
+  }, [hotelId, tableId]);
+
+  const fetchTableOrders = async () => {
+    if (!tableId) return;
+    try {
+      const data = await getTableOrders(hotelId, tableId);
+      if (data.success) {
+        setTableOrders(data.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch table orders", error);
+    }
+  };
 
   const fetchMenu = async () => {
     try {
@@ -61,6 +93,8 @@ export default function CustomerMenuPage({ params }) {
       return;
     }
 
+    setIsPlacingOrder(true);
+
     const items = Object.values(cart).map(({ item, quantity }) => ({
       menuItem: item._id,
       quantity,
@@ -71,21 +105,28 @@ export default function CustomerMenuPage({ params }) {
     const submitOrder = async (lat, lng) => {
       try {
         setOrderStatus("Placing order...");
-        const payload = { tableId, items };
-        if (lat && lng) {
-          payload.customerLat = lat;
-          payload.customerLng = lng;
-        }
+        const payload = {
+          tableId,
+          items,
+          customerNotes: "",
+          customerLat: lat,
+          customerLng: lng,
+          customerName,
+          customerPhone
+        };
         const data = await placeOrder(hotelId, payload);
         if (data.success) {
           setCart({});
           setIsCartOpen(false);
           setOrderId(data.data._id);
-          setOrderStatus(`Order placed. Status: ${data.data.status}`);
+          setOrderStatus(`Order placed successfully.`);
+          fetchTableOrders(); // Refresh the table orders immediately
         }
       } catch (error) {
         alert(error.response?.data?.message || "Failed to place order.");
         setOrderStatus("");
+      } finally {
+        setIsPlacingOrder(false);
       }
     };
 
@@ -99,6 +140,7 @@ export default function CustomerMenuPage({ params }) {
           console.warn("Could not get location", error);
           alert("Location access failed! Please turn on your phone's GPS and allow location permission in your browser to place an order.");
           setOrderStatus("");
+          setIsPlacingOrder(false);
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
@@ -174,6 +216,40 @@ export default function CustomerMenuPage({ params }) {
         {orderStatus && (
           <div className="bg-leaf-500/10 border border-leaf-500/30 text-leaf-600 px-4 py-3 rounded-xl mb-4 font-medium text-center text-sm">
             {orderStatus}
+          </div>
+        )}
+
+        {tableOrders.length > 0 && (
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-3 px-1">
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-espresso-900/50">Your Table's Orders</h2>
+            </div>
+            <div className="bg-crema-100 rounded-xl p-4 space-y-3 font-mono text-sm border border-espresso-900/5 shadow-sm">
+              {tableOrders.map(order => (
+                <div key={order._id} className="pb-3 border-b border-dashed border-espresso-900/10 last:border-0 last:pb-0">
+                  <div className="flex justify-between items-center text-xs text-espresso-900/50 mb-1.5 font-sans font-semibold">
+                    <span>{order.customerName}</span>
+                    <span className={`px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-wider ${
+                      order.status === "COMPLETED" ? "bg-leaf-500/10 text-leaf-700" :
+                      order.status === "ACCEPTED" ? "bg-primary-500/10 text-primary-700" :
+                      "bg-espresso-900/5 text-espresso-900/60"
+                    }`}>
+                      {order.status}
+                    </span>
+                  </div>
+                  {order.items.map((i, idx) => (
+                    <div key={idx} className="flex justify-between text-espresso-900">
+                      <span>{i.quantity}&times; {i.menuItem?.name || "Item"}</span>
+                      <span>&#8377;{i.price * i.quantity}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+              <div className="pt-2 flex justify-between font-bold text-espresso-900 font-sans border-t border-dashed border-espresso-900/20">
+                <span className="text-sm uppercase tracking-wider text-espresso-900/60">Total Bill</span>
+                <span className="text-lg">&#8377;{tableOrders.reduce((sum, o) => sum + o.totalAmount, 0)}</span>
+              </div>
+            </div>
           </div>
         )}
 
@@ -281,10 +357,55 @@ export default function CustomerMenuPage({ params }) {
                 <span className="font-semibold text-espresso-900/60 text-sm uppercase tracking-wide self-center">Total</span>
                 <span className="font-bold text-xl text-espresso-900">&#8377;{totalPrice}</span>
               </div>
-              <Button onClick={handlePlaceOrder} className="w-full py-3.5 text-base rounded-xl">
-                Place order
+              <Button onClick={handlePlaceOrder} disabled={isPlacingOrder} className="w-full py-3.5 text-base rounded-xl">
+                {isPlacingOrder ? "Placing..." : "Place order"}
               </Button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Identity Modal */}
+      {isIdentityModalOpen && (
+        <div className="fixed inset-0 bg-espresso-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-crema-50 rounded-3xl p-7 w-full max-w-sm shadow-2xl">
+            <h2 className="text-2xl font-display font-semibold mb-2 text-espresso-900">Welcome!</h2>
+            <p className="text-sm text-espresso-900/60 mb-6 font-medium">Please enter your details to view the menu and place orders.</p>
+            <div className="space-y-4 mb-8">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-widest text-espresso-900/50 mb-2">Your Name</label>
+                <input
+                  type="text"
+                  value={tempName}
+                  onChange={(e) => setTempName(e.target.value)}
+                  className="w-full bg-crema-100/50 border border-espresso-900/10 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-primary-500 focus:outline-none transition-all text-espresso-900 font-medium"
+                  placeholder="e.g. John Doe"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-widest text-espresso-900/50 mb-2">Phone Number</label>
+                <input
+                  type="tel"
+                  value={tempPhone}
+                  onChange={(e) => setTempPhone(e.target.value)}
+                  className="w-full bg-crema-100/50 border border-espresso-900/10 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-primary-500 focus:outline-none transition-all text-espresso-900 font-medium"
+                  placeholder="e.g. 9876543210"
+                />
+              </div>
+            </div>
+            <Button
+              className="w-full py-4 text-base rounded-xl shadow-lg shadow-primary-500/20"
+              disabled={!tempName.trim() || !tempPhone.trim()}
+              onClick={() => {
+                localStorage.setItem("cafe_customer_name", tempName.trim());
+                localStorage.setItem("cafe_customer_phone", tempPhone.trim());
+                setCustomerName(tempName.trim());
+                setCustomerPhone(tempPhone.trim());
+                setIsIdentityModalOpen(false);
+              }}
+            >
+              Continue to Menu
+            </Button>
           </div>
         </div>
       )}

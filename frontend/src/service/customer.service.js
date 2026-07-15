@@ -24,3 +24,8 @@ export const requestBill = async (hotelId, tableId) => {
     const response = await api.post(`/public/${hotelId}/table/${tableId}/request-bill`);
     return response.data;
 };
+
+export const getTableOrders = async (hotelId, tableId) => {
+    const response = await api.get(`/public/${hotelId}/table/${tableId}/orders`);
+    return response.data;
+};

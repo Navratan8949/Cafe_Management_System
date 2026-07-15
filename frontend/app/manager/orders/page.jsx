@@ -39,8 +39,12 @@ export default function ActiveOrdersPage() {
   const handleUpdateStatus = async (orderId, newStatus) => {
     try {
       await updateOrderStatus(orderId, newStatus);
-      // Remove or update from local state immediately for better UX
-      setOrders((prev) => prev.filter((o) => o._id !== orderId));
+      if (newStatus === "ACCEPTED") {
+        setOrders((prev) => prev.map((o) => o._id === orderId ? { ...o, status: "ACCEPTED" } : o));
+      } else {
+        // COMPLETED or CANCELLED, remove from active orders
+        setOrders((prev) => prev.filter((o) => o._id !== orderId));
+      }
     } catch (error) {
       console.error("Failed to update order status", error);
     }
@@ -69,8 +73,16 @@ export default function ActiveOrdersPage() {
             <div key={order._id} className="ticket-edge pt-3 bg-crema-50 text-espresso-900 rounded-b-xl shadow-lg flex flex-col font-mono">
               <div className="px-4 pb-3 flex justify-between items-baseline border-b border-dashed border-espresso-900/20">
                 <div>
-                  <span className="text-[10px] font-sans font-semibold text-espresso-900/45 uppercase tracking-widest">Order #{order.orderNumber || order._id.slice(-4)}</span>
+                  <span className="text-[10px] font-sans font-semibold text-espresso-900/45 uppercase tracking-widest flex items-center gap-2">
+                    Order #{order.orderNumber || order._id.slice(-4)}
+                    {order.status === "ACCEPTED" && <span className="bg-leaf-500/20 text-leaf-700 px-1.5 py-0.5 rounded-sm">Preparing</span>}
+                  </span>
                   <div className="text-lg font-semibold">Table {order.tableId?.tableNumber}</div>
+                  {(order.customerName || order.customerPhone) && (
+                    <div className="text-xs text-espresso-900/60 mt-0.5 font-sans">
+                      {order.customerName} {order.customerPhone && `• ${order.customerPhone}`}
+                    </div>
+                  )}
                 </div>
                 <div className="text-right">
                   <span className="text-[10px] font-sans font-semibold text-espresso-900/45 uppercase tracking-widest">Total</span>
@@ -93,20 +105,31 @@ export default function ActiveOrdersPage() {
                   </div>
                 )}
 
-                <div className="p-3 border-t border-dashed border-espresso-900/20 grid grid-cols-2 gap-2 mt-auto font-sans">
-                  <Button
-                    variant="danger"
-                    className="w-full gap-2"
-                    onClick={() => handleUpdateStatus(order._id, "CANCELLED")}
-                  >
-                    <XCircle className="w-4 h-4" /> Cancel
-                  </Button>
-                  <Button
-                    className="w-full gap-2 bg-leaf-600 hover:bg-leaf-500 text-crema-50"
-                    onClick={() => handleUpdateStatus(order._id, "ACCEPTED")}
-                  >
-                    <CheckCircle2 className="w-4 h-4" /> Accept
-                  </Button>
+                <div className="p-3 border-t border-dashed border-espresso-900/20 mt-auto font-sans">
+                  {order.status === "PENDING" ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        variant="danger"
+                        className="w-full gap-2"
+                        onClick={() => handleUpdateStatus(order._id, "CANCELLED")}
+                      >
+                        <XCircle className="w-4 h-4" /> Cancel
+                      </Button>
+                      <Button
+                        className="w-full gap-2 bg-leaf-600 hover:bg-leaf-500 text-crema-50"
+                        onClick={() => handleUpdateStatus(order._id, "ACCEPTED")}
+                      >
+                        <CheckCircle2 className="w-4 h-4" /> Accept
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      className="w-full gap-2 bg-primary-600 hover:bg-primary-500 text-crema-50"
+                      onClick={() => handleUpdateStatus(order._id, "COMPLETED")}
+                    >
+                      <CheckCircle2 className="w-4 h-4" /> Complete Order
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
