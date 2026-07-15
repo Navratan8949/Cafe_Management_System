@@ -58,7 +58,7 @@ const createTable = asyncHandler(async (req, res) => {
   const table = await Table.create({ hotelId, tableNumber });
 
   // URL to redirect customer to
-  const tableUrl = `http://10.90.116.27:3000/menu/${hotelId}?tableId=${table._id}&tableNumber=${encodeURIComponent(table.tableNumber)}`;
+  const tableUrl = `https://omni-bite.vercel.app/menu/${hotelId}?tableId=${table._id}&tableNumber=${encodeURIComponent(table.tableNumber)}`;
 
   // Generate actual QR Code image (Base64 format)
   const qrCodeImage = await QRCode.toDataURL(tableUrl);
