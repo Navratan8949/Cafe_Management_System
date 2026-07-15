@@ -37,6 +37,15 @@ export const useSocket = () => {
       }
     };
 
+    const playNotificationSound = () => {
+      try {
+        const audio = new Audio('/sounds/notification.mp3');
+        audio.play().catch(e => console.warn("Audio play blocked by browser:", e));
+      } catch (error) {
+        console.warn("Audio not supported");
+      }
+    };
+
     // Handle incoming events
     socketInstance.on("newOrder", (data) => {
       toast.success(data.message, {
@@ -45,6 +54,7 @@ export const useSocket = () => {
         icon: "🍲"
       });
       showBrowserNotification("New Order Received", data.message);
+      playNotificationSound();
       window.dispatchEvent(new Event("socketUpdate")); // Trigger re-render/refetch
     });
 
@@ -60,6 +70,7 @@ export const useSocket = () => {
         },
       });
       showBrowserNotification("Waiter Called", data.message);
+      playNotificationSound();
       window.dispatchEvent(new Event("socketUpdate"));
     });
 
@@ -75,6 +86,7 @@ export const useSocket = () => {
         },
       });
       showBrowserNotification("Bill Requested", data.message);
+      playNotificationSound();
       window.dispatchEvent(new Event("socketUpdate"));
     });
 

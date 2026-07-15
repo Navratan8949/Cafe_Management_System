@@ -152,22 +152,11 @@ export default function CustomerMenuPage({ params }) {
     }
   };
 
-  const playActionSound = () => {
-    try {
-      // You can place your sound file in the public folder e.g., public/sounds/notification.mp3
-      const audio = new Audio('/sounds/notification.mp3');
-      audio.play().catch(e => console.warn("Audio play blocked by browser:", e));
-    } catch (error) {
-      console.warn("Audio not supported");
-    }
-  };
-
   const handleCallWaiter = async () => {
     if (!tableId) return;
     setIsCallingWaiter(true);
     try {
       await callWaiter(hotelId, tableId);
-      playActionSound();
       alert("Waiter has been called to your table.");
     } catch (error) {
       alert("Failed to call waiter.");
@@ -181,7 +170,6 @@ export default function CustomerMenuPage({ params }) {
     setIsRequestingBill(true);
     try {
       await requestBill(hotelId, tableId);
-      playActionSound();
       alert("Bill requested. Please wait.");
     } catch (error) {
       alert("Failed to request bill.");
