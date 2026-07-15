@@ -33,7 +33,7 @@ export default function CustomerMenuPage({ params }) {
     if (tableId) {
       fetchTableOrders();
     }
-    
+
     // Check local storage for identity
     const savedName = localStorage.getItem("cafe_customer_name");
     const savedPhone = localStorage.getItem("cafe_customer_phone");
@@ -173,7 +173,7 @@ export default function CustomerMenuPage({ params }) {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-crema-50 gap-3">
-        <Coffee className="w-8 h-8 text-primary-500 animate-pulse" />
+        <img src="./images/logo.png" alt="logo" className="w-10 h-10 animate-pulse" />
         <div className="text-espresso-900/50 font-mono text-sm tracking-wide">Brewing the menu&hellip;</div>
       </div>
     );
@@ -229,11 +229,10 @@ export default function CustomerMenuPage({ params }) {
                 <div key={order._id} className="pb-3 border-b border-dashed border-espresso-900/10 last:border-0 last:pb-0">
                   <div className="flex justify-between items-center text-xs text-espresso-900/50 mb-1.5 font-sans font-semibold">
                     <span>{order.customerName}</span>
-                    <span className={`px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-wider ${
-                      order.status === "COMPLETED" ? "bg-leaf-500/10 text-leaf-700" :
+                    <span className={`px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-wider ${order.status === "COMPLETED" ? "bg-leaf-500/10 text-leaf-700" :
                       order.status === "ACCEPTED" ? "bg-primary-500/10 text-primary-700" :
-                      "bg-espresso-900/5 text-espresso-900/60"
-                    }`}>
+                        "bg-espresso-900/5 text-espresso-900/60"
+                      }`}>
                       {order.status}
                     </span>
                   </div>
@@ -267,7 +266,7 @@ export default function CustomerMenuPage({ params }) {
                   <div key={item._id} className="flex bg-crema-50 rounded-xl border border-espresso-900/10 overflow-hidden">
                     {item.image && (
                       <div className="w-24 shrink-0">
-                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                        <img src={item.image} alt={item.name} className="w-full h-[150px] object-cover" />
                       </div>
                     )}
                     <div className="flex-1 p-3 flex flex-col justify-between min-w-0">
