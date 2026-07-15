@@ -152,11 +152,22 @@ export default function CustomerMenuPage({ params }) {
     }
   };
 
+  const playActionSound = () => {
+    try {
+      // You can place your sound file in the public folder e.g., public/sounds/notification.mp3
+      const audio = new Audio('/sounds/notification.mp3');
+      audio.play().catch(e => console.warn("Audio play blocked by browser:", e));
+    } catch (error) {
+      console.warn("Audio not supported");
+    }
+  };
+
   const handleCallWaiter = async () => {
     if (!tableId) return;
     setIsCallingWaiter(true);
     try {
       await callWaiter(hotelId, tableId);
+      playActionSound();
       alert("Waiter has been called to your table.");
     } catch (error) {
       alert("Failed to call waiter.");
@@ -170,6 +181,7 @@ export default function CustomerMenuPage({ params }) {
     setIsRequestingBill(true);
     try {
       await requestBill(hotelId, tableId);
+      playActionSound();
       alert("Bill requested. Please wait.");
     } catch (error) {
       alert("Failed to request bill.");
@@ -212,21 +224,21 @@ export default function CustomerMenuPage({ params }) {
           </div>
           {tableId && (
             <div className="flex gap-2 w-full mt-3">
-              <Button variant="outline" className="flex-1 gap-2 text-xs py-2 bg-crema-50/10 border-crema-50/20 text-crema-50 hover:bg-crema-50/20 hover:text-crema-50" onClick={handleCallWaiter} disabled={isCallingWaiter}>
+              <Button variant="outline" className="flex-1 gap-2 text-xs py-2 bg-crema-50/10 border-crema-50/20 text-white hover:bg-crema-50/20 hover:text-white" onClick={handleCallWaiter} disabled={isCallingWaiter}>
                 {isCallingWaiter ? (
-                  <div className="w-3.5 h-3.5 border-2 border-crema-50/30 border-t-crema-50 rounded-full animate-spin" />
+                  <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
                   <Bell className="w-3.5 h-3.5" />
                 )}
-                Call Waiter
+                <span className="font-semibold tracking-wide">Call Waiter</span>
               </Button>
-              <Button variant="outline" className="flex-1 gap-2 text-xs py-2 bg-crema-50/10 border-crema-50/20 text-crema-50 hover:bg-crema-50/20 hover:text-crema-50" onClick={handleRequestBill} disabled={isRequestingBill}>
+              <Button variant="outline" className="flex-1 gap-2 text-xs py-2 bg-crema-50/10 border-crema-50/20 text-white hover:bg-crema-50/20 hover:text-white" onClick={handleRequestBill} disabled={isRequestingBill}>
                 {isRequestingBill ? (
-                  <div className="w-3.5 h-3.5 border-2 border-crema-50/30 border-t-crema-50 rounded-full animate-spin" />
+                  <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
                   <ReceiptText className="w-3.5 h-3.5" />
                 )}
-                Request Bill
+                <span className="font-semibold tracking-wide">Request Bill</span>
               </Button>
             </div>
           )}
